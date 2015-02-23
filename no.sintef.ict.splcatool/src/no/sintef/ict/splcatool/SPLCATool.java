@@ -358,7 +358,8 @@ public class SPLCATool {
 			cafilename = fmfile + ".ca" + t + ".csv";
 		
 		// Write to file
-		ca.writeToFile(cafilename, CoveringArrayFile.Type.horizontal);
+		boolean hideUnderscoreVariables = argsMap.containsKey("hideUnderscoreVariables");
+		ca.writeToFile(cafilename, CoveringArrayFile.Type.horizontal, hideUnderscoreVariables);
 		System.out.println("Wrote result to " + cafilename);
 		
 		// Bow-tie reduce

@@ -69,13 +69,18 @@ public abstract class CoveringArray {
 
 	
 	public void writeToFile(String filename) throws FileNotFoundException, IOException {
-		writeToFile(filename, Type.horizontal);
+		writeToFile(filename, Type.horizontal, false);
 	}
 	
 	public void writeToFile(String filename, Type type) throws FileNotFoundException, IOException {
+		writeToFile(filename, type, false);
+	}
+	
+	public void writeToFile(String filename, Type type, boolean hideUnderscoreVariables) throws FileNotFoundException, IOException {
 		StringBuffer output = new StringBuffer();
 		
 		if(type == Type.vertical){
+			// hideUnderscoreVariables not implemented
 			List<Integer> nrs = new ArrayList<Integer>(nrid.keySet());
 			Collections.sort(nrs);
 			
@@ -115,13 +120,16 @@ public abstract class CoveringArray {
 			}
 			
 			for(int i = 0; i < nrs.size(); i++){
-				output.append(nrid.get(nrs.get(i)) + ";");
-				for(int j = 0; j < getRowCount(); j++){
-					int n = rows.get(j)[i];
-					if(n==0)
-						output.append("X;");
-					else
-						output.append("-;");
+				if (!hideUnderscoreVariables || !nrid.get(nrs.get(i)).startsWith("__")) {
+					output.append(nrid.get(nrs.get(i)) + ";");
+					for(int j = 0; j < getRowCount(); j++){
+						int n = rows.get(j)[i];
+						if(n==0)
+							output.append("X;");
+						else
+							output.append("-;");
+					}
+					output.append("\n");
 				}
 				output.append("\n");
 			}
