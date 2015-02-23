@@ -13,6 +13,9 @@ package no.sintef.ict.splcatool;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -569,6 +572,36 @@ public class CNF {
 		
 		return uncovered;
 	}
+	public void loadMoreConstraints(String constraintsFile) {
+		// TODO Auto-generated method stub
+		//cnf.addClause(clause)
+	}
+
+	Set<BooleanVariableInterface> focusVariables = new HashSet<BooleanVariableInterface>();
+	public void loadFocusVariables(String focusFile) throws IOException {
+		File focusF = new File(focusFile);
+		if (! focusF.exists()) throw new FileNotFoundException(focusFile);
+		List<String> lines = Files.readAllLines(Paths.get(focusFile), Charset.forName("UTF8"));
+		for (BooleanVariableInterface var : cnf.getVariables()) {
+			int lSize = lines.size();
+			for (int i = 0; i<lSize; i++) {
+				String line = lines.get(i);
+				if (var.getID().equals(line)) {
+					focusVariables.add(var);
+					lines.remove(i);
+					continue;
+				}
+			}
+		}
+		System.out.println("Focus on " + focusVariables.size() +  " variables.");
+	}
+	public Set<BooleanVariableInterface> getFocusVariables(){
+		if (focusVariables.isEmpty())
+			return cnf.getVariables();
+		else
+			return focusVariables;
+	}
+
 
 	public List<Pair2> getAllValidPairs(int threads) {
 	    // Get a list of vars

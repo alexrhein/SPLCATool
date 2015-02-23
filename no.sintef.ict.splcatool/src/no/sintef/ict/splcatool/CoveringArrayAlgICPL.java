@@ -116,7 +116,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 
 	@Override
 	public double estimateGenerationTime() {
-		int F = cnf.getVariables().size();
+		int F = cnf.getFocusVariables().size();
 		
 		if(t == 2) return Math.exp(0.52*Math.log(F) + 0.80);
 		if(t == 3) return Math.exp(0.69*Math.log(F) + 1.25);
@@ -132,7 +132,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 	private void generate1(int coverLimit, Integer sizelimit) throws TimeoutException, org.sat4j.specs.TimeoutException {
 		System.out.println("--- 1-wise ---");
 		
-		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getVariables());
+		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getFocusVariables());
 		List<List<Integer>> solutions = new ArrayList<List<Integer>>(initial);
 		
 		int nrVars = vars.size();
@@ -309,7 +309,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 	private void generate2(int coverLimit, Integer sizelimit) throws TimeoutException, org.sat4j.specs.TimeoutException{
 		
         // Get a list of vars
-		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getVariables());
+		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getFocusVariables());
 		
 		// Get the invalid 1-tuples
 		generate1(100, sizelimit);
@@ -508,7 +508,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 
 	private void generate3(int coverLimit, Integer sizelimit) throws TimeoutException, org.sat4j.specs.TimeoutException{
         // Get a list of vars
-		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getVariables());
+		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getFocusVariables());
 		
 		// Get invalid 2-tuples
 		generate2(100, sizelimit);

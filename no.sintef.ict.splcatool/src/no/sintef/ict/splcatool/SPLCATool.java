@@ -209,6 +209,24 @@ public class SPLCATool {
 			return null;
 		}
 		loadFM(fmfile);
+		if (argsMap.containsKey("moreConstraints")) {
+			String constraintsFile = argsMap.get("moreConstraints");
+			if(constraintsFile==null){
+				System.out.println("Error: You must specify a file with moreConstraints.");
+				return null;
+			}
+			cnf.loadMoreConstraints(constraintsFile);
+		}
+
+		if (argsMap.containsKey("focusVariables")) {
+			String focusFile = argsMap.get("focusVariables");
+			if(focusFile==null){
+				System.out.println("Error: You must specify a file with focusVariables.");
+				return null;
+			}
+			cnf.loadFocusVariables(focusFile);
+		}
+
 		
 		// Handle special multi-file formats
 		if(fmfile.contains(",")){
