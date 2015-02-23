@@ -62,10 +62,12 @@ public class CnfDimacsInitMethods {
 				line = line.trim();
 				if(line.startsWith("//") || line.isEmpty()) {
 					// comment line
-				} else if(line.startsWith("c") && line.split(" ").length==3) {
+				} else if(line.startsWith("c")){
 					//System.out.println(line);
 					String nr = line.split(" ")[1].replace("$", "");
-					String id = line.split(" ")[2];
+					// id is the rest
+					int position_second_blank_in_line = line.indexOf(" ", 3);
+					String id = line.substring(position_second_blank_in_line).trim();
 					nrid.put(new Integer(nr), id);
 					idnr.put(id, new Integer(nr));
 					p_count++;
