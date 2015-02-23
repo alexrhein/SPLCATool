@@ -34,7 +34,7 @@ public class TestWriteCA {
 	
 	@Test
 	public void testWriteCA2() throws IOException, TimeoutException, CSVException, CoveringArrayGenerationException{
-		CNF cnf = new CNF("TestData/Artificial/test.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Artificial/test.dimacs", CNF.type.dimacs, true);
 		CoveringArray ca = cnf.getCoveringArrayGenerator("ICPL", 2);
 		ca.generate();
 		ca.writeToFile("test.dat");

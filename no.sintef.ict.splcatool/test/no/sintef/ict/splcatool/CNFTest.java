@@ -39,11 +39,11 @@ public class CNFTest {
 		for(String file : new FileUtility().traverseDirCollectFiles("TestData/Realistic")){
 			CNF cnf = null;
 			if(file.endsWith(".dimacs")){
-				cnf = new CNF(file, CNF.type.dimacs);
+				cnf = new CNF(file, CNF.type.dimacs, true);
 			}else if(file.endsWith(".dot")){
-				cnf = new CNF(file, CNF.type.dot);
+				cnf = new CNF(file, CNF.type.dot, true);
 			}else if(file.endsWith(".cnf")){
-				cnf = new CNF(file, CNF.type.cnf);
+				cnf = new CNF(file, CNF.type.cnf, true);
 			}else continue;
 			
 			System.out.println("Testing the loading of CNF file: " + file);
@@ -73,7 +73,7 @@ public class CNFTest {
 			SXFM sxfm = m.getSXFM();
 			CNF cnf1 = sxfm.getCNF();
 			
-			CNF cnf2 = new CNF(file + ".cnf", CNF.type.cnf);
+			CNF cnf2 = new CNF(file + ".cnf", CNF.type.cnf, true);
 			
 			System.out.println("Comparing the CNF and the converted CNF: " + file);
 			

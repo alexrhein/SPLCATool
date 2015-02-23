@@ -149,9 +149,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("check"));
 		boolean isValid = verifyCA(cnf, ca);
 		System.out.println("Verification done");
@@ -170,9 +170,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		if(t==1){
 			// Calculate the valid pairs
 			List<Pair> uncovered = cnf.getAllValidSingles(1);
@@ -234,9 +234,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		/*
 		if (argsMap.containsKey("moreConstraints")) {
 			String constraintsFile = argsMap.get("moreConstraints");
@@ -384,9 +384,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		
 		// Handle special multi-file formats
 		if(fmfile.contains(",")){
@@ -452,9 +452,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		System.out.println("Satisfying the feature model");
 		
 		long start, end;
@@ -483,9 +483,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 
 		if (argsMap.containsKey("focusVariables")) {
 			String focusFile = argsMap.get("focusVariables");
@@ -547,9 +547,9 @@ public class SPLCATool {
 			for (int i = 0; i <constrArr.length;i++)
 				if (!constrArr[i].isEmpty())
 					constrFileList.add(constrArr[i]);
-			loadFM(argsMap.get("fm"),  constrFileList);
+			loadFM(argsMap.get("fm"),  constrFileList, argsMap.containsKey("makeUnusedVarsMandatory"));
 		} else
-			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList(), argsMap.containsKey("makeUnusedVarsMandatory"));
 		System.out.println("Counting solutions");
 		double sols = fm.getNrOfProducts();
 		System.out.println("Solutions: " + sols);
@@ -605,7 +605,7 @@ public class SPLCATool {
 		return allvalid;
 	}
 
-	private void loadFM(String file, List<String> moreConstraints) throws UnsupportedModelException,
+	private void loadFM(String file, List<String> moreConstraints, boolean makeUnusedVarsMandatory) throws UnsupportedModelException,
 			IOException, FeatureModelException {
 		if(file.endsWith(".m")){
 			System.out.println("Loading GUI DSL: " + file);
@@ -618,13 +618,13 @@ public class SPLCATool {
 			cnf = fm.getCNF();
 		}else if(file.endsWith(".dimacs")){
 			System.out.println("Loading dimacs: " + file);
-			cnf = new CNF(file, CNF.type.dimacs, moreConstraints);
+			cnf = new CNF(file, CNF.type.dimacs, moreConstraints, makeUnusedVarsMandatory);
 		}else if(file.endsWith(".cnf")){
 			System.out.println("Loading cnf: " + file);
-			cnf = new CNF(file, CNF.type.cnf, moreConstraints);
+			cnf = new CNF(file, CNF.type.cnf, moreConstraints, makeUnusedVarsMandatory);
 		}else if(file.endsWith(".dot")){
 			System.out.println("Loading DOT: " + file);
-			cnf = new CNF(file, CNF.type.dot, moreConstraints);
+			cnf = new CNF(file, CNF.type.dot, moreConstraints, makeUnusedVarsMandatory);
 		}/*else if(file.endsWith(".constraints")){
 			System.out.println("Loading CASA Model: " + file);
 			CASAModel cm = new CASAModel(new File(file.split(",")[0]), new File(file.split(",")[1]));

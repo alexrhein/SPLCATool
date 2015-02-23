@@ -91,13 +91,16 @@ public class CNF {
 		}
 	}
 	
-	public CNF(String fmfile, type t) throws IOException{
+	public CNF(String fmfile, type t, boolean makeUnusedVarsMandatory) throws IOException {
 		if(t == type.dimacs){
 			idnr = new HashMap<String, Integer>();
 			nrid = new HashMap<Integer, String>();
 			CnfDimacsInitMethods init = new CnfDimacsInitMethods(nrid,idnr);
 			init.loadMainDimacs(fmfile);
-			init.fixUnusedVars();
+			if(makeUnusedVarsMandatory)
+				init.makeUnusedVarsMandatory();
+			else
+				init.addTrueOrFalseClausesForUnusedVars();
 			cnf = init.getCNF();
 		}else if(t == type.dot){
 			loadDot(fmfile);
@@ -105,7 +108,8 @@ public class CNF {
 			loadCnf(fmfile);
 		}
 	}
-	public CNF(String fmfile, type t, List<String> moreConstraintFiles) throws IOException {
+	
+	public CNF(String fmfile, type t, List<String> moreConstraintFiles, boolean makeUnusedVarsMandatory) throws IOException {
 		if (moreConstraintFiles!= null && ! moreConstraintFiles.isEmpty()) {
 			if(t == type.dimacs){
 				idnr = new HashMap<String, Integer>();
@@ -115,7 +119,10 @@ public class CNF {
 				for (String constraintsFile : moreConstraintFiles) {
 					init.loadMoreConstraints(constraintsFile);
 				}
-				init.fixUnusedVars();
+				if(makeUnusedVarsMandatory)
+					init.makeUnusedVarsMandatory();
+				else
+					init.addTrueOrFalseClausesForUnusedVars();
 				cnf = init.getCNF();
 			} else {
 				throw new Error("not implemented");
@@ -125,7 +132,10 @@ public class CNF {
 			nrid = new HashMap<Integer, String>();
 			CnfDimacsInitMethods init = new CnfDimacsInitMethods(nrid,idnr);
 			init.loadMainDimacs(fmfile);
-			init.fixUnusedVars();
+			if(makeUnusedVarsMandatory)
+				init.makeUnusedVarsMandatory();
+			else
+				init.addTrueOrFalseClausesForUnusedVars();
 			cnf = init.getCNF();
 			
 		} else if(t == type.dot){

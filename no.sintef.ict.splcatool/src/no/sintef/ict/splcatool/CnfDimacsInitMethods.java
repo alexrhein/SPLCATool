@@ -260,7 +260,7 @@ public class CnfDimacsInitMethods {
 	/**
 	 * this adds all variables that have not been used so far as mandatory.
 	 */
-	public void fixUnusedVars() {
+	public void makeUnusedVarsMandatory() {
 		for(String x : nrid.values()) {
 			if(!stored.contains(x)) {
 				BooleanVariableInterface bv = new BooleanVariable(x);
@@ -274,4 +274,23 @@ public class CnfDimacsInitMethods {
 			}
 		}
 	}
+	/**
+	 * this adds clauses for all variables that have not been used so far.
+	 * The clause says "A or !A" so that the semantics of the model is not changed but the variable is used.
+	 */
+	public void addTrueOrFalseClausesForUnusedVars() {
+		for(String x : nrid.values()) {
+			if(!stored.contains(x)) {
+				BooleanVariableInterface bv = new BooleanVariable(x);
+				vars.put(x, bv);
+				CNFClause cl = new CNFClause();
+				CNFLiteral l1 = new CNFLiteral(bv, true);
+				CNFLiteral l2 = new CNFLiteral(bv, false);
+				cl.addLiteral(l1);
+				cl.addLiteral(l2);
+				cnf.addClause(cl);
+			}
+		}
+	}
+
 }

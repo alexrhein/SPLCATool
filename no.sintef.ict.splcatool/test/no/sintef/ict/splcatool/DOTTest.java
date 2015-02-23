@@ -46,7 +46,7 @@ public class DOTTest {
 			
 			System.out.println(file);
 			
-			CNF cnf = new CNF(file, CNF.type.cnf);
+			CNF cnf = new CNF(file, CNF.type.cnf, true);
 			
 			//System.out.println("CNF size: " + cnf.cnf.toString().length());
 			

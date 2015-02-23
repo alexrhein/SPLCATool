@@ -342,7 +342,7 @@ public class TestSatAssumps {
 	
 	@Test
 	public void testBug() throws IOException, TimeoutException{
-		CNF cnf = new CNF("TestData/Realistic/Eshop-fm.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Realistic/Eshop-fm.dimacs", CNF.type.dimacs, true);
 
 		int x[][] = {
 		{-1},
@@ -415,7 +415,7 @@ public class TestSatAssumps {
 	
 	@Test
 	public void testBug2() throws IOException, TimeoutException{
-		CNF cnf = new CNF("TestData/Realistic/Eshop-fm.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Realistic/Eshop-fm.dimacs", CNF.type.dimacs, true);
 		SAT4JSolver satSolver = null;
 		try {
 			satSolver = cnf.getSAT4JSolver();

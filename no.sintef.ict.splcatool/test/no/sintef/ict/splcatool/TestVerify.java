@@ -341,7 +341,7 @@ public class TestVerify {
 		IProblem problem = reader.parseInstance("TestData/Realistic/ecos-icse11.dimacs");
 		assertTrue(problem.isSatisfiable());
 		
-		CNF cnf = new CNF("TestData/Realistic/ecos-icse11.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Realistic/ecos-icse11.dimacs", CNF.type.dimacs, true);
 		
 		CoveringArray ca = new CoveringArrayFile("reports/bestcoverages/ecos-icse11-size66-1thread.dimacs.ca2.csv");
 		for(int n = 0; n < ca.getRowCount(); n++){
@@ -369,7 +369,7 @@ public class TestVerify {
 		IProblem problem = reader.parseInstance("TestData/Realistic/freebsd-icse11.dimacs");
 		assertTrue(problem.isSatisfiable());
 		
-		CNF cnf = new CNF("TestData/Realistic/freebsd-icse11.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Realistic/freebsd-icse11.dimacs", CNF.type.dimacs, true);
 		
 		CoveringArray ca = new CoveringArrayFile("reports/bestcoverages/freebsd-icse11-size78-1thread.dimacs.ca2.csv");
 		for(int n = 0; n < ca.getRowCount(); n++){
@@ -394,7 +394,7 @@ public class TestVerify {
 		IProblem problem = reader.parseInstance("TestData/Realistic/2.6.28.6-icse11.dimacs");
 		assertTrue(problem.isSatisfiable());
 		
-		CNF cnf = new CNF("TestData/Realistic/2.6.28.6-icse11.dimacs", CNF.type.dimacs);
+		CNF cnf = new CNF("TestData/Realistic/2.6.28.6-icse11.dimacs", CNF.type.dimacs, true);
 		
 		CoveringArray ca = new CoveringArrayFile("reports/bestcoverages/2.6.28.6-icse11-size469-1thread.dimacs.ca2.csv");
 		for(int n = 0; n < ca.getRowCount(); n++){
