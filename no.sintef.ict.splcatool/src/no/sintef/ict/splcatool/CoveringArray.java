@@ -120,7 +120,7 @@ public abstract class CoveringArray {
 			}
 			
 			for(int i = 0; i < nrs.size(); i++){
-				if (!hideUnderscoreVariables || !nrid.get(nrs.get(i)).startsWith("__")) {
+				if (!hideUnderscoreVariables || !nrid.get(nrs.get(i)).startsWith("_")) {
 					output.append(nrid.get(nrs.get(i)) + ";");
 					for(int j = 0; j < getRowCount(); j++){
 						int n = rows.get(j)[i];
@@ -131,7 +131,6 @@ public abstract class CoveringArray {
 					}
 					output.append("\n");
 				}
-				output.append("\n");
 			}
 			
 			// Sort if featureOrder is populated
