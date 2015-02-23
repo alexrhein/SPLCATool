@@ -17,6 +17,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+
+import no.sintef.ict.splcatool.CNF.type;
 
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
@@ -95,14 +99,48 @@ public class CNF {
 	
 	public CNF(String fmfile, type t) throws IOException{
 		if(t == type.dimacs){
-			loadDimacs(fmfile);
+			idnr = new HashMap<String, Integer>();
+			nrid = new HashMap<Integer, String>();
+			CnfDimacsInitMethods init = new CnfDimacsInitMethods(nrid,idnr);
+			init.loadMainDimacs(fmfile);
+			init.fixUnusedVars();
+			cnf = init.getCNF();
 		}else if(t == type.dot){
 			loadDot(fmfile);
 		}else if(t == type.cnf){
 			loadCnf(fmfile);
 		}
 	}
-	
+	public CNF(String fmfile, type t, List<String> moreConstraintFiles) throws IOException {
+		if (moreConstraintFiles!= null && ! moreConstraintFiles.isEmpty()) {
+			if(t == type.dimacs){
+				idnr = new HashMap<String, Integer>();
+				nrid = new HashMap<Integer, String>();
+				CnfDimacsInitMethods init = new CnfDimacsInitMethods(nrid,idnr);
+				init.loadMainDimacs(fmfile);
+				for (String constraintsFile : moreConstraintFiles) {
+					init.loadMoreConstraints(constraintsFile);
+				}
+				init.fixUnusedVars();
+				cnf = init.getCNF();
+			} else {
+				throw new Error("not implemented");
+			}
+		} else if(t == type.dimacs){
+			idnr = new HashMap<String, Integer>();
+			nrid = new HashMap<Integer, String>();
+			CnfDimacsInitMethods init = new CnfDimacsInitMethods(nrid,idnr);
+			init.loadMainDimacs(fmfile);
+			init.fixUnusedVars();
+			cnf = init.getCNF();
+			
+		} else if(t == type.dot){
+			loadDot(fmfile);
+		} else if(t == type.cnf){
+			loadCnf(fmfile);
+		}
+	}
+
 	private void loadCnf(String file) throws IOException {
 		//Map<Integer, String> nrid = new HashMap<Integer, String>();
 		Set<Set<Integer>> cs = new HashSet<Set<Integer>>();
@@ -194,114 +232,6 @@ public class CNF {
 		this.cnf = cnf;
 	}
 
-	private void loadDimacs(String dimacsFile) throws IOException{
-		Set<Set<Integer>> cs = new HashSet<Set<Integer>>();
-		
-		String filec = new FileUtility().readFileAsString(dimacsFile);
-		
-		int j = 0;
-		int c_count = 0;
-		int nc_count = 0;
-		int p_count = 0;
-		int given_p = 0;
-		int given_c = 0;
-		for(String line : filec.split("\n")){
-			line = line.trim();
-			if(line.startsWith("c") && line.split(" ").length==3){
-				//System.out.println(line);
-				String nr = line.split(" ")[1].replace("$", "");
-				String id = line.split(" ")[2];
-				nrid.put(new Integer(nr), id);
-				idnr.put(id, new Integer(nr));
-				p_count++;
-			}else if(line.endsWith(" 0")){
-				Set<Integer> c = new HashSet<Integer>();
-				line = line.substring(0, line.length()-1).trim(); // Remove end 0
-				for(String p : line.split(" ")){
-					c.add(new Integer(p));
-				}
-				int oldsize = cs.size();
-				cs.add(c);
-				if(oldsize == cs.size()){
-					nc_count++;
-					/*System.out.println("Duplicate line: " + line);
-					List<Set<Integer>> nns = new ArrayList<Set<Integer>>(cs);
-					for(int i = 0; i < nns.size(); i++){
-						if(nns.get(i).equals(c)){
-							System.out.println(nns.get(i));
-						}
-					}
-					System.exit(0);*/
-				}else{
-					c_count++;
-				}
-				j++;
-			}else if(line.startsWith("p cnf")){
-				given_p = new Integer(line.split(" ")[2]);
-				given_c = new Integer(line.split(" ")[3]);
-			}else{
-				System.out.println("Error loading file due to: " + line);
-				System.exit(-1);
-			}
-		}
-		
-		if(given_p != p_count || (c_count + nc_count) != given_c){
-			System.out.println("Given p and c not equal with actual p and c: " + given_p + " and " + given_c + " vs " + p_count + " and " + (c_count + nc_count));
-			System.exit(-1);
-		}
-		
-		System.out.println("CNF: Given p and c: " + given_p + " and " + given_c);
-		/*
-		System.out.println("Features: " + p_count);
-		System.out.println("Constraints: " + c_count);
-		System.out.println("All constraints: " + (c_count + nc_count));
-		*/
-		
-		// Write CNF
-		Map<String, BooleanVariableInterface> vars = new HashMap<String, BooleanVariableInterface>();
-		Set<String> stored = new HashSet<String>();
-		CNFFormula cnf = new CNFFormula();
-		for(Set<Integer> clause : cs){
-			CNFClause cl = new CNFClause();
-			
-			//System.out.println("Clause: " + clause);
-		
-			for(Integer p : clause){
-				boolean isNegative = (p<0);
-				BooleanVariableInterface bv = null;
-				if(vars.get(nrid.get(Math.abs(p))) == null){
-					//System.out.println(nrid.get(Math.abs(p)));
-					bv = new BooleanVariable(nrid.get(Math.abs(p)));
-					vars.put(nrid.get(Math.abs(p)), bv);
-				}else{
-					bv = vars.get(nrid.get(Math.abs(p)));
-				}
-				stored.add(bv.getID());
-				CNFLiteral l = new CNFLiteral(bv, !isNegative);
-				cl.addLiteral(l);
-			}
-			cnf.addClause(cl);
-		}
-		
-		// Add the remaining vars
-/*		System.out.println(stored.size());
-		System.out.println(nrid.values().size());
-*/		for(String x : nrid.values()){
-			if(!stored.contains(x)){
-				BooleanVariableInterface bv = new BooleanVariable(x);
-				vars.put(x, bv);
-				CNFClause cl = new CNFClause();
-				CNFLiteral l1 = new CNFLiteral(bv, true);
-				CNFLiteral l2 = new CNFLiteral(bv, true);
-				cl.addLiteral(l1);
-				cl.addLiteral(l2);
-				cnf.addClause(cl);
-			}
-		}
-		
-		this.cnf = cnf;
-	}
-	
 	private void loadDot(String dotFile) throws IOException{
 		Map<Integer, String> nrid = new HashMap<Integer, String>();
 		Set<Set<Integer>> cs = new HashSet<Set<Integer>>();
@@ -572,11 +502,6 @@ public class CNF {
 		
 		return uncovered;
 	}
-	public void loadMoreConstraints(String constraintsFile) {
-		// TODO Auto-generated method stub
-		//cnf.addClause(clause)
-	}
-
 	Set<BooleanVariableInterface> focusVariables = new HashSet<BooleanVariableInterface>();
 	public void loadFocusVariables(String focusFile) throws IOException {
 		File focusF = new File(focusFile);

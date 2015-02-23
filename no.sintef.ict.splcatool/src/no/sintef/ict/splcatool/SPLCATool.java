@@ -12,6 +12,7 @@ package no.sintef.ict.splcatool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -139,7 +140,10 @@ public class SPLCATool {
 	boolean verify_solutions(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException, CSVException {
-		loadFM(argsMap.get("fm"));
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("check"));
 		boolean isValid = verifyCA(cnf, ca);
 		System.out.println("Verification done");
@@ -149,10 +153,13 @@ public class SPLCATool {
 
 	float calc_cov(Map<String, String> argsMap) throws UnsupportedModelException, IOException, FeatureModelException, CSVException {
 		int t = new Integer(argsMap.get("s"));
-		loadFM(argsMap.get("fm"));
+		
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("ca"));
 		System.out.println("Rows: " + ca.getRowCount());
-		
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		if(t==1){
 			// Calculate the valid pairs
 			List<Pair> uncovered = cnf.getAllValidSingles(1);
@@ -208,7 +215,11 @@ public class SPLCATool {
 			System.out.println("Error: You must specify a feature model.");
 			return null;
 		}
-		loadFM(fmfile);
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+		/*
 		if (argsMap.containsKey("moreConstraints")) {
 			String constraintsFile = argsMap.get("moreConstraints");
 			if(constraintsFile==null){
@@ -216,7 +227,7 @@ public class SPLCATool {
 				return null;
 			}
 			cnf.loadMoreConstraints(constraintsFile);
-		}
+		}*/
 
 		if (argsMap.containsKey("focusVariables")) {
 			String focusFile = argsMap.get("focusVariables");
@@ -348,7 +359,10 @@ public class SPLCATool {
 			System.out.println("Error: You must specify a feature model.");
 			return null;
 		}
-		loadFM(fmfile);
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		
 		// Handle special multi-file formats
 		if(fmfile.contains(",")){
@@ -408,7 +422,10 @@ public class SPLCATool {
 	long sat_time(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException {
-		loadFM(argsMap.get("fm"));
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Satisfying the feature model");
 		
 		long start, end;
@@ -428,7 +445,10 @@ public class SPLCATool {
 	double count_solutions(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, BDDExceededBuildingTimeException {
-		loadFM(argsMap.get("fm"));
+		if (argsMap.containsKey("moreConstraints"))
+			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
+		else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Counting solutions");
 		double sols = fm.getNrOfProducts();
 		System.out.println("Solutions: " + sols);
@@ -484,7 +504,7 @@ public class SPLCATool {
 		return allvalid;
 	}
 
-	private void loadFM(String file) throws UnsupportedModelException,
+	private void loadFM(String file, List<String> moreConstraints) throws UnsupportedModelException,
 			IOException, FeatureModelException {
 		if(file.endsWith(".m")){
 			System.out.println("Loading GUI DSL: " + file);
@@ -497,13 +517,13 @@ public class SPLCATool {
 			cnf = fm.getCNF();
 		}else if(file.endsWith(".dimacs")){
 			System.out.println("Loading dimacs: " + file);
-			cnf = new CNF(file, CNF.type.dimacs);
+			cnf = new CNF(file, CNF.type.dimacs, moreConstraints);
 		}else if(file.endsWith(".cnf")){
 			System.out.println("Loading cnf: " + file);
-			cnf = new CNF(file, CNF.type.cnf);
+			cnf = new CNF(file, CNF.type.cnf, moreConstraints);
 		}else if(file.endsWith(".dot")){
 			System.out.println("Loading DOT: " + file);
-			cnf = new CNF(file, CNF.type.dot);
+			cnf = new CNF(file, CNF.type.dot, moreConstraints);
 		}/*else if(file.endsWith(".constraints")){
 			System.out.println("Loading CASA Model: " + file);
 			CASAModel cm = new CASAModel(new File(file.split(",")[0]), new File(file.split(",")[1]));

@@ -111,7 +111,7 @@ public class MandatoryAndDeadDetection {
 		
 		// Find mandatory features
 		if(notmandatory.size()!=vars.size()){
-			List<BooleanVariableInterface> varscand = new ArrayList<BooleanVariableInterface>(cnf.getVariables());
+			List<BooleanVariableInterface> varscand = new ArrayList<BooleanVariableInterface>(cnf.getFocusVariables());
 			varscand.removeAll(notmandatory);
 			List<List<BooleanVariableInterface>> varSplit = new ArrayList<List<BooleanVariableInterface>>();
 			int beg=0, range=varscand.size()/threads + 1;

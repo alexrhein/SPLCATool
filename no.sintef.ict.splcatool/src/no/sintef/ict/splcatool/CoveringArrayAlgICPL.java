@@ -473,7 +473,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 			
 			// Remove invalid at some round
 			if(!invalidRemoved){
-				if((int)Math.log10(cov.size()) <= (int)Math.log10(cnf.getVariables().size()) || coverLimit <= coverage){
+				if((int)Math.log10(cov.size()) <= (int)Math.log10(cnf.getFocusVariables().size()) || coverLimit <= coverage){
 					System.out.println("Removing invalid");
 					int diff = uncovSet.size();
 					uncovSet = new HashSet<Pair2>(getInvalid(coveredInitially, new ArrayList<Pair2>(uncovSet)));
@@ -652,7 +652,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 			
 			// Remove invalid at some round
 			if(!invalidRemoved){
-				if((int)Math.log10(cov.size()) <= (int)Math.log10(cnf.getVariables().size())){
+				if((int)Math.log10(cov.size()) <= (int)Math.log10(cnf.getFocusVariables().size())){
 					System.out.println("Removing invalid");
 					int diff = uncovered.size();
 					uncovered = getInvalid3(coveredInitially, uncovered);
