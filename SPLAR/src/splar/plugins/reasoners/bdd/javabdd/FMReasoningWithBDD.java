@@ -1,5 +1,8 @@
 package splar.plugins.reasoners.bdd.javabdd;
 
+import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
+import net.sf.javabdd.BDDFactory.ReorderMethod;
 import splar.core.constraints.CNFClause;
 import splar.core.constraints.CNFFormula;
 import splar.core.constraints.CNFLiteral;
@@ -11,9 +14,6 @@ import splar.core.fm.SolitaireFeature;
 import splar.core.fm.clustering.FeatureModelClustersManager;
 import splar.core.fm.clustering.NodeCluster;
 import splar.core.heuristics.VariableOrderingHeuristic;
-import net.sf.javabdd.BDD;
-import net.sf.javabdd.BDDFactory;
-import net.sf.javabdd.BDDFactory.ReorderMethod;
 
 public class FMReasoningWithBDD extends FTReasoningWithBDD {
 

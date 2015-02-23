@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import org.sat4j.specs.TimeoutException;
 
 import splar.core.fm.FeatureModelException;
 import splar.plugins.reasoners.bdd.javabdd.BDDExceededBuildingTimeException;
-
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 
 public class SPLCATool {
@@ -91,6 +89,8 @@ public class SPLCATool {
 				System.out.println(" - Dimacs (.dimacs)");
 				System.out.println(" - CNF (.cnf)");
 				return;
+			}else if(task.equals("allSat")){
+				generateAllSat(argsMap);
 			}else if(task.equals("count_solutions")){
 				count_solutions(argsMap);
 			}else if(task.equals("sat_time")){
@@ -471,6 +471,73 @@ public class SPLCATool {
 		return (end-start)/1000;
 	}
 
+	CoveringArray generateAllSat(Map<String, String> argsMap) throws UnsupportedModelException, IOException, FeatureModelException, java.util.concurrent.TimeoutException, FileNotFoundException, CSVException, CoveringArrayGenerationException {
+		String fmfile = argsMap.get("fm");
+		if(fmfile==null){
+			System.out.println("Error: You must specify a feature model.");
+			return null;
+		}
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
+		} else
+			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
+
+		if (argsMap.containsKey("focusVariables")) {
+			String focusFile = argsMap.get("focusVariables");
+			if(focusFile==null){
+				System.out.println("Error: You must specify a file with focusVariables.");
+				return null;
+			}
+			cnf.loadFocusVariables(focusFile);
+		}
+
+		// Handle special multi-file formats
+		if(fmfile.contains(",")){
+			fmfile = fmfile.split(",")[0];
+		}
+		// Make CA
+		System.out.println("Generating all sat");
+		CoveringArray ca = null;
+		ca = cnf.getCoveringArrayGenerator("allSat", 0);
+
+		System.out.println("Running algorithm: " + ca.getAlgorithmName());
+
+		// Limit
+		String lim = argsMap.get("limit");
+		if(lim.contains("%")) lim = lim.substring(0, lim.length()-1);
+		int limit = new Integer(lim);
+		System.out.println("Covering " + limit + "%");
+
+		// Size limit
+		Integer sizelimit = Integer.MAX_VALUE;
+		if(argsMap.get("sizelimit") != null){
+			sizelimit = new Integer(argsMap.get("sizelimit"));
+		}
+
+		// Cover
+		long start = System.currentTimeMillis();
+		ca.generate(limit, sizelimit);
+		long end = System.currentTimeMillis();
+		System.out.println("Done. Size: " + ca.getRowCount() + ", time: " + (end-start) + " milliseconds");
+
+		// Generate output file name
+		String cafilename = argsMap.get("o");
+		if(cafilename == null)
+			cafilename = fmfile + ".ca" + "allSat" + ".csv";
+
+		// Write to file
+		boolean hideUnderscoreVariables = argsMap.containsKey("hideUnderscoreVariables");
+		ca.writeToFile(cafilename, CoveringArrayFile.Type.horizontal, hideUnderscoreVariables);
+		System.out.println("Wrote result to " + cafilename);
+
+		return ca;
+	}
+	
 	double count_solutions(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, BDDExceededBuildingTimeException {

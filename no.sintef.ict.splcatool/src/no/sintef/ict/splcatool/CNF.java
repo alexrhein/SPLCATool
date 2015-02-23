@@ -17,17 +17,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
-import no.sintef.ict.splcatool.CNF.type;
 
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
@@ -406,7 +400,9 @@ public class CNF {
 	}
 
 	public CoveringArray getCoveringArrayGenerator(String a, int t) {
-		if(a.equals("ICPL")){
+		if (a.equals("allSat"))
+			return new CoveringArrayAlgAllSat(this, nrid, idnr);
+		else if(a.equals("ICPL")) {
 			if(t==1 || t==2 || t==3) return getCoveringArrayGeneratorICPL(t);
 			else return null;
 		}else if(a.equals("Chvatal")){
