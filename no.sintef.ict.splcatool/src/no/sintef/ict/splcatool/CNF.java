@@ -285,7 +285,7 @@ public class CNF {
 		final int MAXVAR = cnf.countVariables();
 		final int NBCLAUSES = cnf.countClauses();
 		ISolver solver = SolverFactory.newDefault();
-		solver.setDBSimplificationAllowed(true);
+		//solver.setDBSimplificationAllowed(true);
 		solver.newVar(MAXVAR);
 		solver.setExpectedNumberOfClauses(NBCLAUSES);
 /*		int i = 1;
@@ -338,7 +338,7 @@ public class CNF {
 		final int MAXVAR = cnf.countVariables();
 		final int NBCLAUSES = cnf.countClauses();
 		ISolver solver = SolverFactory.newDefault();
-		solver.setDBSimplificationAllowed(true);
+		//solver.setDBSimplificationAllowed(true);
 		solver.newVar(MAXVAR);
 		solver.setExpectedNumberOfClauses(NBCLAUSES);
 /*		int i = 1;
