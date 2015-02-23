@@ -55,7 +55,9 @@ public class CnfDimacsInitMethods {
 			int given_c = 0;
 			for(String line : filec.split("\n")){
 				line = line.trim();
-				if(line.startsWith("c") && line.split(" ").length==3){
+				if(line.startsWith("//")) {
+					// comment line
+				} else if(line.startsWith("c") && line.split(" ").length==3) {
 					//System.out.println(line);
 					String nr = line.split(" ")[1].replace("$", "");
 					String id = line.split(" ")[2];
@@ -166,7 +168,9 @@ public class CnfDimacsInitMethods {
 		int given_c = 0;
 		for(String line : filec.split("\n")){
 			line = line.trim();
-			if(line.startsWith("c") && line.split(" ").length==3){
+			if(line.startsWith("//")) {
+				// comment line
+			} if(line.startsWith("c") && line.split(" ").length==3){
 				//System.out.println(line);
 				String nr = line.split(" ")[1].replace("$", "");
 				String id = line.split(" ")[2];
