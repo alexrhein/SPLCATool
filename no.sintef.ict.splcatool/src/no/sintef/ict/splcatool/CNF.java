@@ -518,6 +518,9 @@ public class CNF {
 			}
 		}
 		System.out.println("Focus on " + focusVariables.size() +  " variables.");
+		if (focusVariables.isEmpty()) {
+			throw new IllegalArgumentException("focus variables file is empty?");
+		}
 	}
 	public Set<BooleanVariableInterface> getFocusVariables(){
 		if (focusVariables.isEmpty())
