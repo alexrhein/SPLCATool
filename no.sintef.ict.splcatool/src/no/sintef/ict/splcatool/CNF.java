@@ -309,8 +309,6 @@ public class CNF {
 */		
 		for(CNFClause c : cnf.getClauses()){
 			//System.out.println("clause " + x++ + " of " + cnf.getClauses().size());
-			if (c.toString().contains("OMIT_LOAD_EXTENSION"))
-				System.out.println();
 			
 			List<Integer> li = new ArrayList<Integer>();
 			for(CNFLiteral l : c.getLiterals()){
