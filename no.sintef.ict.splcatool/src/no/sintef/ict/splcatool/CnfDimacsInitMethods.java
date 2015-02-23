@@ -1,5 +1,7 @@
 package no.sintef.ict.splcatool;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +48,9 @@ public class CnfDimacsInitMethods {
 	public void loadMainDimacs(String dimacsFile) 
 			throws IOException{
 			Set<Set<Integer>> cs = new HashSet<Set<Integer>>();
+			if (!(new File (dimacsFile)).exists() || (new File (dimacsFile)).isDirectory()) {
+				throw new FileNotFoundException("File not found: \"" + dimacsFile+ "\"");
+			}
 			String filec = new FileUtility().readFileAsString(dimacsFile);
 			int j = 0;
 			int c_count = 0;
@@ -55,7 +60,7 @@ public class CnfDimacsInitMethods {
 			int given_c = 0;
 			for(String line : filec.split("\n")){
 				line = line.trim();
-				if(line.startsWith("//")) {
+				if(line.startsWith("//") || line.isEmpty()) {
 					// comment line
 				} else if(line.startsWith("c") && line.split(" ").length==3) {
 					//System.out.println(line);
@@ -154,7 +159,12 @@ public class CnfDimacsInitMethods {
 		cl.addLiteral(new CNFLiteral(f3, true));
 		cnf.addClause(cl);
 		*/
-		
+
+		if (!(new File (constraintsFile)).exists() || (new File (constraintsFile)).isDirectory()) {
+			throw new FileNotFoundException("File not found: \"" + constraintsFile + "\"");
+		} else {
+			System.out.println("loading additional constraints: " + constraintsFile);
+		}
 		Map<String, Integer> mcidnr = new HashMap<String, Integer>();
 		Map<Integer, String> mcnrid = new HashMap<Integer, String>();
 
@@ -168,9 +178,9 @@ public class CnfDimacsInitMethods {
 		int given_c = 0;
 		for(String line : filec.split("\n")){
 			line = line.trim();
-			if(line.startsWith("//")) {
+			if(line.startsWith("//") || line.isEmpty()) {
 				// comment line
-			} if(line.startsWith("c") && line.split(" ").length==3){
+			} else if(line.startsWith("c") && line.split(" ").length==3) {
 				//System.out.println(line);
 				String nr = line.split(" ")[1].replace("$", "");
 				String id = line.split(" ")[2];
@@ -216,17 +226,25 @@ public class CnfDimacsInitMethods {
 			for(Integer p : clause){
 				boolean isNegative = (p<0);
 				BooleanVariableInterface bv = null;
-				if(vars.get(mcnrid.get(Math.abs(p))) == null){
+				if(vars.get(mcnrid.get(Math.abs(p))) == null) {
+					if (mcnrid.get(Math.abs(p)) == null) {
+						throw new IOException("error while loading dimacs clause: " + clause + " variable " + Math.abs(p) + " is not defined.");
+					}
 					bv = new BooleanVariable(mcnrid.get(Math.abs(p)));
 					vars.put(mcnrid.get(Math.abs(p)), bv);
-				}else{
+				} else {
 					bv = vars.get(mcnrid.get(Math.abs(p)));
 				}
 				stored.add(bv.getID());
 				CNFLiteral l = new CNFLiteral(bv, !isNegative);
 				cl.addLiteral(l);
 			}
-			this.cnf.addClause(cl);
+			try {
+				this.cnf.addClause(cl);
+			} catch (Exception e) {
+				System.out.println("problem while adding clause " + cl + " (" + clause + ")");
+				throw e;
+			}
 		}
 
 		// Add the remaining vars

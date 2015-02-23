@@ -60,7 +60,8 @@ public class SPLCATool {
 		for(int i = 0; i < args.length; i++){
 			if(args[i].startsWith("-")){
 				last = args[i].substring(1);
-				argsMap.put(last, "");
+				if(!last.equals("moreConstraints") || !argsMap.containsKey("moreConstraints"))
+					argsMap.put(last, "");
 			}else{
 				String params = argsMap.get(last);
 				params += " " + args[i];
@@ -143,8 +144,12 @@ public class SPLCATool {
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException, CSVException {
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("check"));
@@ -160,8 +165,12 @@ public class SPLCATool {
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("ca"));
 		System.out.println("Rows: " + ca.getRowCount());
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		if(t==1){
@@ -220,8 +229,12 @@ public class SPLCATool {
 			return null;
 		}
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		/*
@@ -365,8 +378,12 @@ public class SPLCATool {
 			return null;
 		}
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		
@@ -429,8 +446,12 @@ public class SPLCATool {
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException {
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Satisfying the feature model");
@@ -453,8 +474,12 @@ public class SPLCATool {
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, BDDExceededBuildingTimeException {
 		if (argsMap.containsKey("moreConstraints")) {
-			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
-			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s+");
+			List<String> constrFileList = new ArrayList<String>();
+			for (int i = 0; i <constrArr.length;i++)
+				if (!constrArr[i].isEmpty())
+					constrFileList.add(constrArr[i]);
+			loadFM(argsMap.get("fm"),  constrFileList);
 		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Counting solutions");
