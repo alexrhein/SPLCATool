@@ -44,9 +44,16 @@ public class MandatoryAndDeadDetection {
 			SAT4JSolver satSolver = null;
 			try {
 				satSolver = cnf.getSAT4JSolver();
-				satSolver.solver.isSatisfiable();
+				boolean sat = satSolver.solver.isSatisfiable();
+				if (!sat) {
+					System.out.println("Contradiction");
+					System.out.println("The entire model is not satisfiable?!");
+				}
 			} catch (ContradictionException e1) {
+				System.out.println("ContradictionException");
+				System.out.println("The entire model is not satisfiable?!");
 			} catch (org.sat4j.specs.TimeoutException e) {
+				System.out.println("Solver Timeout exception");
 			}
 			int[] s = satSolver.solver.model();
 			List<Integer> solution = new ArrayList<Integer>();

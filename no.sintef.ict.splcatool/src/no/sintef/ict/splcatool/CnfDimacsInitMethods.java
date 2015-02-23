@@ -209,12 +209,12 @@ public class CnfDimacsInitMethods {
 				System.exit(-1);
 			}
 		}
-
+		/*// dont care, I dont want to always set the clause count while testing
 		if(given_p != p_count || (c_count + nc_count) != given_c){
 			System.out.println("Given p and c not equal with actual p and c: " + given_p + " and " + given_c + " vs " + p_count + " and " + (c_count + nc_count));
 			System.exit(-1);
 		}
-
+		*/
 		System.out.println("CNF: Given p and c: " + given_p + " and " + given_c);
 
 		// Write CNF
