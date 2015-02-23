@@ -71,7 +71,7 @@ public class CnfDimacsInitMethods {
 					nrid.put(new Integer(nr), id);
 					idnr.put(id, new Integer(nr));
 					p_count++;
-				}else if(line.endsWith(" 0")){
+				}else if(line.endsWith(" 0") && !line.startsWith("p")){
 					Set<Integer> c = new HashSet<Integer>();
 					line = line.substring(0, line.length()-1).trim(); // Remove end 0
 					for(String p : line.split(" ")){
