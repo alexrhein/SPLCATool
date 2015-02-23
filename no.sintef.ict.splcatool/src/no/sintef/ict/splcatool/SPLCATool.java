@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,9 +142,10 @@ public class SPLCATool {
 	boolean verify_solutions(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException, CSVException {
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("check"));
 		boolean isValid = verifyCA(cnf, ca);
@@ -156,9 +159,10 @@ public class SPLCATool {
 		
 		CoveringArray ca = new CoveringArrayFile(argsMap.get("ca"));
 		System.out.println("Rows: " + ca.getRowCount());
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		if(t==1){
 			// Calculate the valid pairs
@@ -215,9 +219,10 @@ public class SPLCATool {
 			System.out.println("Error: You must specify a feature model.");
 			return null;
 		}
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		/*
 		if (argsMap.containsKey("moreConstraints")) {
@@ -359,9 +364,10 @@ public class SPLCATool {
 			System.out.println("Error: You must specify a feature model.");
 			return null;
 		}
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		
 		// Handle special multi-file formats
@@ -422,9 +428,10 @@ public class SPLCATool {
 	long sat_time(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, ContradictionException, TimeoutException {
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Satisfying the feature model");
 		
@@ -445,9 +452,10 @@ public class SPLCATool {
 	double count_solutions(Map<String, String> argsMap)
 			throws UnsupportedModelException, IOException,
 			FeatureModelException, BDDExceededBuildingTimeException {
-		if (argsMap.containsKey("moreConstraints"))
-			loadFM(argsMap.get("fm"), Collections.<String>singletonList(argsMap.get("moreConstraints")));
-		else
+		if (argsMap.containsKey("moreConstraints")) {
+			String[] constrArr = argsMap.get("moreConstraints").trim().split("\\s*");
+			loadFM(argsMap.get("fm"), Arrays.asList(constrArr) );
+		} else
 			loadFM(argsMap.get("fm"), Collections.<String>emptyList());
 		System.out.println("Counting solutions");
 		double sols = fm.getNrOfProducts();
