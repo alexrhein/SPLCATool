@@ -508,8 +508,7 @@ public class CNF {
 		if (! focusF.exists()) throw new FileNotFoundException(focusFile);
 		List<String> lines = Files.readAllLines(Paths.get(focusFile), Charset.forName("UTF8"));
 		for (BooleanVariableInterface var : cnf.getVariables()) {
-			int lSize = lines.size();
-			for (int i = 0; i<lSize; i++) {
+			for (int i = 0; i < lines.size(); i++) {
 				String line = lines.get(i);
 				if (var.getID().equals(line)) {
 					focusVariables.add(var);
