@@ -3,6 +3,7 @@
 	<name>no.sintef.ict.splcatool</name>
 	<comment></comment>
 	<projects>
+		<project>org.sat4j.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
