@@ -309,19 +309,24 @@ public class CNF {
 */		
 		for(CNFClause c : cnf.getClauses()){
 			//System.out.println("clause " + x++ + " of " + cnf.getClauses().size());
+			if (c.toString().contains("OMIT_LOAD_EXTENSION"))
+				System.out.println();
 			
 			List<Integer> li = new ArrayList<Integer>();
 			for(CNFLiteral l : c.getLiterals()){
 				//System.out.println(idnr.get(l.getVariable().getID()));
+				Integer varid = idnr.get(l.getVariable().getID());
+				if (varid == null) System.out.println("Parsed unknown variable \""+l.toString() + "\". This will probably not work.");
 				if(l.isPositive()){
-					li.add(idnr.get(l.getVariable().getID()));
+					li.add(varid);
 				}else{
-					li.add(-idnr.get(l.getVariable().getID()));
+					li.add(-varid);
 				}
 			}
 			int [] clause = new int [li.size()];
-			for(int j=0;j<li.size();j++)
+			for(int j=0;j<li.size();j++) {
 				clause[j] = li.get(j);
+			}
 
 			try{
 				solver.addClause((IVecInt) new VecInt(clause));
