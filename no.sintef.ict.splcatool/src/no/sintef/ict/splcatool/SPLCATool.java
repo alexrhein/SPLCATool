@@ -83,6 +83,10 @@ public class SPLCATool {
 				System.out.println(" -t calc_cov -fm <feature_model> -s <strength> -ca <covering array>");
 				System.out.println(" -t verify_solutions -fm <feature_model> -check <covering array>");
 				System.out.println(" -t help (this menu)");
+				System.out.println(" -t allSat");
+				System.out.println(" -makeUnusedVarsMandatory");
+				System.out.println(" -focusVariables <file with list of var names>");
+				System.out.println(" -hideUnderscroreVariables");
 				System.out.println("Supported Feature models formats: ");
 				System.out.println(" - Feature IDE GUI DSL (.m)");
 				System.out.println(" - Simple XML Feature Models (.xml)");
