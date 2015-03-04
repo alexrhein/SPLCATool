@@ -304,6 +304,17 @@ public class SPLCATool {
 		
 		ca = cnf.getCoveringArrayGenerator(a, t);
 		
+		if(argsMap.containsKey("saveAfterEachRound")){
+			if (ca instanceof CoveringArrayAlgICPL) {
+				((CoveringArrayAlgICPL)ca).saveAfterEachRound=true;
+				((CoveringArrayAlgICPL)ca).tmpSave_hideUnderscoreVariables = argsMap.containsKey("hideUnderscoreVariables");
+			} else {
+				System.out.println("\"saveAfterEachRound\" is only supported for ICPL");
+				return null;
+			}
+			
+		}
+		
 		// Do not cover all zero tuples
 		if(argsMap.containsKey("noAllZeros")){
 			ca.coverZeros(false);
@@ -313,7 +324,7 @@ public class SPLCATool {
 		if(argsMap.containsKey("onlyOnes")){
 			ca.coverOnlyOnes(true);
 		}
-		
+				
 		// Cover eight only
 		if(argsMap.containsKey("eights")){
 			ca.coverEightOnly(new Integer(argsMap.get("eights")));

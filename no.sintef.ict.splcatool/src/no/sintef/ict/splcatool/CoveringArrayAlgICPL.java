@@ -11,6 +11,8 @@
 package no.sintef.ict.splcatool;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+
+import no.sintef.ict.splcatool.CoveringArrayFile.Type;
 
 import org.apache.commons.math.util.MathUtils;
 import org.sat4j.specs.ContradictionException;
@@ -37,6 +41,10 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 	private Set<Pair2> invalid2w;
 	private Set<Pair3> invalid3w;
 	private File fmdir;
+	
+	public boolean saveAfterEachRound = false;
+	public String tmp_save_filename = "tmp_solutions.csv";
+	public boolean tmpSave_hideUnderscoreVariables;
 
 	public CoveringArrayAlgICPL(int t, CNF cnf, Map<Integer, String> nrid, Map<String, Integer> idnr) {
 		this.t = t;
@@ -488,6 +496,15 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 			solutions.addAll(sols);
 			uncovered.clear();
 			uncovered.addAll(uncovSet);
+			if (saveAfterEachRound) {
+				try {
+					result=solutions;
+					writeToFile(tmp_save_filename,Type.horizontal, tmpSave_hideUnderscoreVariables);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			// Report progress
 			System.out.println("Uncovered: " + uncovered.size() + ", progress: " + (grandTotal-uncovered.size())*100/grandTotal + "% with solutions: " + solutions.size());
@@ -506,7 +523,7 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 		System.out.println("2-wise done, solutions: "+solutions.size()+", invalid: " + invalid2w.size());
 	}
 
-	private void generate3(int coverLimit, Integer sizelimit) throws TimeoutException, org.sat4j.specs.TimeoutException{
+	private void generate3(int coverLimit, Integer sizelimit) throws TimeoutException, org.sat4j.specs.TimeoutException {
         // Get a list of vars
 		List<BooleanVariableInterface> vars = new ArrayList<BooleanVariableInterface>(cnf.getFocusVariables());
 		
@@ -632,6 +649,17 @@ public class CoveringArrayAlgICPL extends CoveringArray {
 				System.out.println("Round complete");
 				uncovered.addAll(fmt.getUncovered());
 				sols.addAll(fmt.getSolutions());
+				
+				if (saveAfterEachRound) {
+					try {
+						solutions.addAll(sols);
+						result=solutions;
+						writeToFile(tmp_save_filename,Type.horizontal, tmpSave_hideUnderscoreVariables);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 			
 			// Remove covered

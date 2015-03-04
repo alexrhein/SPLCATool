@@ -75,11 +75,12 @@ public class CoveringArrayAlgAllSat extends CoveringArray {
 			List<Integer> nl = result.get(n);
 			Integer[] res = new Integer[nl.size()];
 			
-	/*		if(nl.size() != nrs.size()){
+			/*
+			if(nl.size() != nrs.size()){
 				System.out.println("Incompatible sizes: " + nl.size() + " and " + nrs.size());
 				System.exit(-1);
-			}
-	*/		
+			} */
+			
 			for(int i = 0; i < nrs.size(); i++){
 				int x = nrs.get(i);
 				for(int j = 0; j < nl.size(); j++){
